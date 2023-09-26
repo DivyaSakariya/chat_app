@@ -131,6 +131,8 @@ class ChatPage extends StatelessWidget {
                                 child: Card(
                                   child: ListTile(
                                     onLongPress: () {
+                                      msgController.editMode(false);
+
                                       if (allChats[index].type == 'sent') {
                                         showDialog(
                                           context: context,
@@ -196,6 +198,17 @@ class ChatPage extends StatelessWidget {
                                                             receivedChatIndex,
                                                         newMsg:
                                                             editController.text,
+                                                      );
+                                                    } else {
+                                                      FireStoreHelper
+                                                          .fireStoreHelper
+                                                          .deleteChat(
+                                                        senderEmailId:
+                                                            data['sender'],
+                                                        receiverEmailId:
+                                                            data['receiver'],
+                                                        senderChatIndex:
+                                                            sentChatIndex,
                                                       );
                                                     }
 

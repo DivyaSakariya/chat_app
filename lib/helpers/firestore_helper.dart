@@ -142,6 +142,30 @@ class FireStoreHelper {
         .set(receiver);
   }
 
+  deleteChat({
+    required String senderEmailId,
+    required String receiverEmailId,
+    required int senderChatIndex,
+  }) async {
+    Map<String, dynamic> sender = await getUser(emailId: senderEmailId);
+    Map<String, dynamic> receiver = await getUser(emailId: receiverEmailId);
+
+    sender['sent'][receiverEmailId]['msg'].removeAt(senderChatIndex);
+    sender['sent'][receiverEmailId]['time'].removeAt(senderChatIndex);
+
+    receiver['received'][senderEmailId]['msg'].removeAt(senderChatIndex);
+    receiver['received'][senderEmailId]['time'].removeAt(senderChatIndex);
+
+    _firebaseFirestore
+        .collection(_collectionUser)
+        .doc(senderEmailId)
+        .set(sender);
+    _firebaseFirestore
+        .collection(_collectionUser)
+        .doc(receiverEmailId)
+        .set(receiver);
+  }
+
   addStudent({required StudentModal studentModal}) {
     Map<String, dynamic> data = {
       _colId: studentModal.id,
