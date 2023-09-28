@@ -1,14 +1,53 @@
-import 'dart:developer';
-
 import 'package:firebase_chat_app/helpers/auth_helper.dart';
 import 'package:firebase_chat_app/helpers/firestore_helper.dart';
+import 'package:firebase_chat_app/helpers/local_notification_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../modals/user_modal.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
+  askNotificationPermission() async {
+    PermissionStatus permissionStatus = await Permission.notification.request();
+
+    print("=====STATUS: ${permissionStatus.isGranted}");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    switch (state) {
+      case AppLifecycleState.paused:
+        //status = offline
+        break;
+      case AppLifecycleState.resumed:
+        //status = online
+        break;
+      default:
+      //status = offline
+    }
+  }
+
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   WidgetsBinding.instance.removeObserver(this);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +55,9 @@ class HomePage extends StatelessWidget {
 
     FireStoreHelper.fireStoreHelper.getContacts(emailId: user!.email);
 
-    log("EMAIL ${user.email}");
+    print("EMAIL ${user.email}");
+
+    askNotificationPermission();
 
     return Scaffold(
       appBar: AppBar(
@@ -56,6 +97,16 @@ class HomePage extends StatelessWidget {
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) => Card(
                   child: ListTile(
+                    onLongPress: () {
+                      print("==========Notification==========");
+
+                      LocalNotificationHelper.localNotificationHelper
+                          .simpleNotification(
+                        userEmailId: user.email,
+                        title: "User: ${user.userName}",
+                        subtitle: "SEND TO ${snapshot.data![index]}",
+                      );
+                    },
                     onTap: () {
                       Map data = {
                         'sender': user.email,

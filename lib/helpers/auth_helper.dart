@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -31,10 +29,10 @@ class AuthHelper {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'operation-not-allowed':
-          log("Unable to SignIn Anonymously");
+          print("Unable to SignIn Anonymously");
           break;
         default:
-          log("Exception: ${e.code}");
+          print("Exception: ${e.code}");
       }
       return false;
     }
@@ -51,13 +49,13 @@ class AuthHelper {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'weak-password':
-          log(e.code);
+          print(e.code);
           break;
         case 'email-already-in-use':
-          log(e.code);
+          print(e.code);
           break;
         default:
-          log(e.code);
+          print(e.code);
       }
       return false;
     }
@@ -72,7 +70,7 @@ class AuthHelper {
       );
       return true;
     } on FirebaseAuthException catch (e) {
-      log(e.code);
+      print(e.code);
       return true;
     }
   }

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_chat_app/modals/student_modal.dart';
 
@@ -25,6 +23,7 @@ class FireStoreHelper {
   final String _userContacts = 'contacts';
   final String _userReceived = 'received';
   final String _userSent = 'sent';
+  final String _userStatus = 'status';
 
   final int _counter = 0;
 
@@ -53,7 +52,7 @@ class FireStoreHelper {
   Future<List> getContacts({required String emailId}) async {
     Map<String, dynamic> user = await getUser(emailId: emailId);
 
-    log("User Contact Data: $user['contacts");
+    print("User Contact Data: $user['contacts");
 
     return user['contacts'];
   }
@@ -92,11 +91,11 @@ class FireStoreHelper {
 
     String time = "${d.day}/${d.month}/${d.year}-${d.hour}:${d.minute}";
 
-    log("-----------------------------------");
-    log("TIME: $time");
-    log("SENDER: $sender");
-    log("RECEIVER: $receiver");
-    log("-----------------------------------");
+    print("-----------------------------------");
+    print("TIME: $time");
+    print("SENDER: $sender");
+    print("RECEIVER: $receiver");
+    print("-----------------------------------");
 
     sender['sent'][receiverEmailId]['msg'].add(msg);
     sender['sent'][receiverEmailId]['time'].add(time);
@@ -104,11 +103,11 @@ class FireStoreHelper {
     receiver['received'][senderEmailId]['msg'].add(msg);
     receiver['received'][senderEmailId]['time'].add(time);
 
-    log("-----------NEW DATA----------------");
-    log("TIME: $time");
-    log("SENDER: $sender");
-    log("RECEIVER: $receiver");
-    log("-----------------------------------");
+    print("-----------NEW DATA----------------");
+    print("TIME: $time");
+    print("SENDER: $sender");
+    print("RECEIVER: $receiver");
+    print("-----------------------------------");
 
     _firebaseFirestore
         .collection(_collectionUser)
@@ -123,14 +122,13 @@ class FireStoreHelper {
   editChat(
       {required String senderEmailId,
       required String receiverEmailId,
-      required int senderChatIndex,
-      required int receiverChatIndex,
+      required int chatIndex,
       required String newMsg}) async {
     Map<String, dynamic> sender = await getUser(emailId: senderEmailId);
     Map<String, dynamic> receiver = await getUser(emailId: receiverEmailId);
 
-    sender['sent'][receiverEmailId]['msg'][senderChatIndex] = newMsg;
-    receiver['received'][senderEmailId]['msg'][receiverChatIndex] = newMsg;
+    sender['sent'][receiverEmailId]['msg'][chatIndex] = newMsg;
+    receiver['received'][senderEmailId]['msg'][chatIndex] = newMsg;
 
     _firebaseFirestore
         .collection(_collectionUser)
@@ -145,16 +143,16 @@ class FireStoreHelper {
   deleteChat({
     required String senderEmailId,
     required String receiverEmailId,
-    required int senderChatIndex,
+    required int chatIndex,
   }) async {
     Map<String, dynamic> sender = await getUser(emailId: senderEmailId);
     Map<String, dynamic> receiver = await getUser(emailId: receiverEmailId);
 
-    sender['sent'][receiverEmailId]['msg'].removeAt(senderChatIndex);
-    sender['sent'][receiverEmailId]['time'].removeAt(senderChatIndex);
+    sender['sent'][receiverEmailId]['msg'].removeAt(chatIndex);
+    sender['sent'][receiverEmailId]['time'].removeAt(chatIndex);
 
-    receiver['received'][senderEmailId]['msg'].removeAt(senderChatIndex);
-    receiver['received'][senderEmailId]['time'].removeAt(senderChatIndex);
+    receiver['received'][senderEmailId]['msg'].removeAt(chatIndex);
+    receiver['received'][senderEmailId]['time'].removeAt(chatIndex);
 
     _firebaseFirestore
         .collection(_collectionUser)
@@ -190,7 +188,7 @@ class FireStoreHelper {
         .map((e) => StudentModal.fromMap(data: e.data() as Map))
         .toList();
 
-    log("Student Data: ${allStudents[0].id} ${allStudents[0].name}");
+    print("Student Data: ${allStudents[0].id} ${allStudents[0].name}");
 
     return allStudents;
   }

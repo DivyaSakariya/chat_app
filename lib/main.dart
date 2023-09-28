@@ -1,4 +1,5 @@
 import 'package:firebase_chat_app/helpers/auth_helper.dart';
+import 'package:firebase_chat_app/helpers/local_notification_helper.dart';
 import 'package:firebase_chat_app/views/screens/add_student.dart';
 import 'package:firebase_chat_app/views/screens/chat_page.dart';
 import 'package:firebase_chat_app/views/screens/home_page.dart';
@@ -15,6 +16,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  LocalNotificationHelper.localNotificationHelper.initNotification();
 
   runApp(
     const MyApp(),

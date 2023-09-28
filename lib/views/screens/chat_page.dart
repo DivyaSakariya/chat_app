@@ -1,10 +1,7 @@
-import 'dart:developer';
-
 import 'package:firebase_chat_app/controller/msg_controller.dart';
 import 'package:firebase_chat_app/helpers/firestore_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
 import '../../modals/chat_modal.dart';
 
@@ -94,8 +91,8 @@ class ChatPage extends StatelessWidget {
                       return dateTime;
                     }).toList();
 
-                    log("SENDER CHAT: $sentChat");
-                    log("SENDER TIME: $sentTime");
+                    print("SENDER CHAT: $sentChat");
+                    print("SENDER TIME: $sentTime");
 
                     List<ChatModal> allChats =
                         List.generate(sentChat.length, (index) {
@@ -112,7 +109,7 @@ class ChatPage extends StatelessWidget {
                     allChats.sort((c1, c2) => c1.time.isAfter(c2.time) ? 1 : 0);
 
                     allChats.forEach((element) {
-                      log("TIME: ${element.time.minute}");
+                      print("TIME: ${element.time.minute}");
                     });
 
                     return ListView.builder(
@@ -192,10 +189,8 @@ class ChatPage extends StatelessWidget {
                                                             data['sender'],
                                                         receiverEmailId:
                                                             data['receiver'],
-                                                        senderChatIndex:
+                                                        chatIndex:
                                                             sentChatIndex,
-                                                        receiverChatIndex:
-                                                            receivedChatIndex,
                                                         newMsg:
                                                             editController.text,
                                                       );
@@ -207,7 +202,7 @@ class ChatPage extends StatelessWidget {
                                                             data['sender'],
                                                         receiverEmailId:
                                                             data['receiver'],
-                                                        senderChatIndex:
+                                                        chatIndex:
                                                             sentChatIndex,
                                                       );
                                                     }
@@ -260,7 +255,7 @@ class ChatPage extends StatelessWidget {
               controller: chatController,
               textInputAction: TextInputAction.send,
               onSubmitted: (val) {
-                log("MESSAGE : $val");
+                print("MESSAGE : $val");
 
                 FireStoreHelper.fireStoreHelper.sentChats(
                   senderEmailId: data['sender'],

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_chat_app/helpers/auth_helper.dart';
 import 'package:firebase_chat_app/helpers/firestore_helper.dart';
 import 'package:firebase_chat_app/modals/user_modal.dart';
@@ -63,7 +61,7 @@ class LogInPage extends StatelessWidget {
                         password = await FireStoreHelper.fireStoreHelper
                             .getCredential(emailId: val);
 
-                        log("PSW: $password");
+                        print("PSW: $password");
                       },
                       controller: emailController,
                       keyboardType: TextInputType.emailAddress,
@@ -79,7 +77,7 @@ class LogInPage extends StatelessWidget {
                           isNav = true;
                           Get.snackbar(
                             "Success!!",
-                            "LogIn Done...",
+                            "printIn Done...",
                             colorText: Colors.green,
                             snackPosition: SnackPosition.BOTTOM,
                           );
@@ -118,13 +116,13 @@ class LogInPage extends StatelessWidget {
                   userModal.userName = userNameController.text;
                   userModal.email = emailController.text;
 
-                  log("NAME: ${userModal.userName}");
-                  log("EMAIL: ${userModal.email}");
+                  print("NAME: ${userModal.userName}");
+                  print("EMAIL: ${userModal.email}");
 
                   if (isNav) {
                     Get.offNamed('/home_page', arguments: userModal);
                   } else {
-                    log("FAILED TO LOGIN...");
+                    print("FAILED TO printIN...");
                     Get.offNamed('/home_page', arguments: userModal);
                   }
                 },
