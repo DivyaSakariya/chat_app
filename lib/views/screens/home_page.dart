@@ -131,21 +131,38 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           },
         ),
         // StreamBuilder(
-        //   stream: FireStoreHelper.fireStoreHelper.getStudentStream(),
+        //   stream: FireStoreHelper.fireStoreHelper
+        //       .getUserStream(userEmailId: user.email),
         //   builder: (context, snapshot) {
         //     if (snapshot.hasData) {
-        //       List<QueryDocumentSnapshot<Map<String, dynamic>>> docs =
-        //           snapshot.data!.docs;
-        //
-        //       List<StudentModal> allStudents = docs
-        //           .map((e) => StudentModal.fromMap(data: e.data()))
-        //           .toList();
+        //       DocumentSnapshot<Map<String, dynamic>> allData = snapshot.data!;
+        //       Map<String, dynamic>? data = allData.data();
+        //       List contacts = data!['contacts'];
         //
         //       return ListView.builder(
-        //         itemCount: allStudents.length,
-        //         itemBuilder: (context, index) => ListTile(
-        //           title: Text(allStudents[index].name),
-        //           subtitle: Text(allStudents[index].age.toString()),
+        //         itemCount: contacts.length,
+        //         itemBuilder: (context, index) => Card(
+        //           child: ListTile(
+        //             onLongPress: () {
+        //               print("==========Notification==========");
+        //
+        //               LocalNotificationHelper.localNotificationHelper
+        //                   .simpleNotification(
+        //                 userEmailId: user.email,
+        //                 title: "User: ${user.userName}",
+        //                 subtitle: "SEND TO ${snapshot.data![index]}",
+        //               );
+        //             },
+        //             onTap: () {
+        //               Map data = {
+        //                 'sender': user.email,
+        //                 'receiver': snapshot.data![index],
+        //               };
+        //
+        //               Get.toNamed('/chat_page', arguments: data);
+        //             },
+        //             title: Text(snapshot.data![index]),
+        //           ),
         //         ),
         //       );
         //     } else if (snapshot.hasError) {
@@ -159,12 +176,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         //     }
         //   },
         // ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Get.toNamed('add_student_page');
-        },
-        child: const Icon(Icons.add),
       ),
     );
   }

@@ -164,6 +164,22 @@ class FireStoreHelper {
         .set(receiver);
   }
 
+  userOffline({required String email}) async {
+    Map<String, dynamic>? data = await getUser(emailId: email);
+    data['status'] = "Offline";
+
+    _firebaseFirestore.collection(_collectionUser).doc(email).set(data);
+
+    print(data.toString());
+  }
+
+  userOnline({required String email}) async {
+    Map<String, dynamic>? data = await getUser(emailId: email);
+    data['status'] = "Online";
+
+    _firebaseFirestore.collection(_collectionUser).doc(email).set(data);
+  }
+
   addStudent({required StudentModal studentModal}) {
     Map<String, dynamic> data = {
       _colId: studentModal.id,

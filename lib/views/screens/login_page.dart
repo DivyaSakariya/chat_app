@@ -14,6 +14,7 @@ class LogInPage extends StatelessWidget {
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
 
+    String? email;
     String? password;
     bool isNav = false;
 
@@ -50,6 +51,16 @@ class LogInPage extends StatelessWidget {
                   children: [
                     TextFormField(
                       controller: userNameController,
+                      onFieldSubmitted: (val) async {
+                        email = await FireStoreHelper.fireStoreHelper
+                            .getCredential(emailId: val);
+
+                        password = await FireStoreHelper.fireStoreHelper
+                            .getCredential(emailId: val);
+
+                        print("EMAIL: $email");
+                        print("PSW: $password");
+                      },
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: "User Name",
@@ -57,14 +68,27 @@ class LogInPage extends StatelessWidget {
                     ),
                     const Gap(12),
                     TextFormField(
-                      onFieldSubmitted: (val) async {
-                        password = await FireStoreHelper.fireStoreHelper
-                            .getCredential(emailId: val);
-
-                        print("PSW: $password");
-                      },
                       controller: emailController,
                       keyboardType: TextInputType.emailAddress,
+                      onFieldSubmitted: (val) {
+                        if (email == val) {
+                          isNav = true;
+                          // Get.snackbar(
+                          //   "Success!!",
+                          //   "LogIn Done...",
+                          //   colorText: Colors.green,
+                          //   snackPosition: SnackPosition.BOTTOM,
+                          // );
+                        } else {
+                          isNav = false;
+                          // Get.snackbar(
+                          //   "Failed!!",
+                          //   "Email Id Mismatched...",
+                          //   colorText: Colors.red,
+                          //   snackPosition: SnackPosition.BOTTOM,
+                          // );
+                        }
+                      },
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: "Email",
@@ -75,20 +99,20 @@ class LogInPage extends StatelessWidget {
                       onFieldSubmitted: (val) {
                         if (password == val) {
                           isNav = true;
-                          Get.snackbar(
-                            "Success!!",
-                            "printIn Done...",
-                            colorText: Colors.green,
-                            snackPosition: SnackPosition.BOTTOM,
-                          );
+                          // Get.snackbar(
+                          //   "Success!!",
+                          //   "printIn Done...",
+                          //   colorText: Colors.green,
+                          //   snackPosition: SnackPosition.BOTTOM,
+                          // );
                         } else {
                           isNav = false;
-                          Get.snackbar(
-                            "Failed!!",
-                            "Password Mismatched...",
-                            colorText: Colors.red,
-                            snackPosition: SnackPosition.BOTTOM,
-                          );
+                          // Get.snackbar(
+                          //   "Failed!!",
+                          //   "Password Mismatched...",
+                          //   colorText: Colors.red,
+                          //   snackPosition: SnackPosition.BOTTOM,
+                          // );
                         }
                       },
                       controller: passwordController,
@@ -122,8 +146,14 @@ class LogInPage extends StatelessWidget {
                   if (isNav) {
                     Get.offNamed('/home_page', arguments: userModal);
                   } else {
-                    print("FAILED TO printIN...");
+                    print("FAILED TO LogIN...");
                     Get.offNamed('/home_page', arguments: userModal);
+                    Get.snackbar(
+                      "Failed!!",
+                      "Please Check Email Id or Password...",
+                      colorText: Colors.red,
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
                   }
                 },
                 child: const Text("SignIn"),

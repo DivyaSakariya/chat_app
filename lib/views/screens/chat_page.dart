@@ -1,37 +1,108 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_chat_app/controller/msg_controller.dart';
+import 'package:firebase_chat_app/controller/status_controller.dart';
 import 'package:firebase_chat_app/helpers/firestore_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../modals/chat_modal.dart';
 
-class ChatPage extends StatelessWidget {
+class ChatPage extends StatefulWidget {
   ChatPage({super.key});
 
+  @override
+  State<ChatPage> createState() => _ChatPageState();
+}
+
+class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   Map data = Get.arguments;
 
   MsgController msgController = Get.put(MsgController());
+  StatusController statusController = Get.put(StatusController());
 
   TextEditingController chatController = TextEditingController();
   TextEditingController editController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
+    didChangeAppLifecycleState(AppLifecycleState.resumed);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    print("==========STATUS Check Start==========");
+    print("Status State: $state");
+
+    switch (state) {
+      case AppLifecycleState.paused:
+        statusController.checkStatus(
+            email: data['sender'], currentStatus: "Offline");
+        FireStoreHelper.fireStoreHelper.userOffline(email: data['sender']);
+        break;
+      case AppLifecycleState.resumed:
+        statusController.checkStatus(
+            email: data['sender'], currentStatus: "Online");
+        FireStoreHelper.fireStoreHelper.userOnline(email: data['sender']);
+        break;
+      default:
+        statusController.checkStatus(
+            email: data['sender'], currentStatus: "Offline");
+        FireStoreHelper.fireStoreHelper.userOffline(email: data['sender']);
+    }
+
+    print("==========STATUS Check End==========");
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    WidgetsBinding.instance.removeObserver(this);
+    didChangeAppLifecycleState(AppLifecycleState.paused);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: StreamBuilder(
-          stream: FireStoreHelper.fireStoreHelper
-              .getUserStream(userEmailId: data['receiver']),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              Map<String, dynamic> userData =
-                  snapshot.data!.data() as Map<String, dynamic>;
+        title: Column(
+          children: [
+            StreamBuilder(
+              stream: FireStoreHelper.fireStoreHelper
+                  .getUserStream(userEmailId: data['receiver']),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  Map<String, dynamic> userData =
+                      snapshot.data!.data() as Map<String, dynamic>;
 
-              return Text(userData['name']);
-            } else {
-              return const Text("User");
-            }
-          },
+                  return Text(userData['name']);
+                } else {
+                  return const Text("User");
+                }
+              },
+            ),
+            StreamBuilder(
+                stream: FireStoreHelper.fireStoreHelper.getUserStream(
+                  userEmailId: data['receiver'],
+                ),
+                builder: (context, snapShot) {
+                  DocumentSnapshot<Map<String, dynamic>>? doc = snapShot.data;
+                  Map<String, dynamic>? userData = doc!.data();
+
+                  print(userData!['status']);
+                  return Text(
+                    userData['status'] == "Online" ? "Online" : "Offline",
+                    style: const TextStyle(
+                      fontSize: 10,
+                    ),
+                  );
+                }),
+          ],
         ),
       ),
       body: Padding(
@@ -157,7 +228,7 @@ class ChatPage extends StatelessWidget {
                                               actions: [
                                                 ElevatedButton.icon(
                                                   onPressed: () {
-                                                    msgController.isEdit();
+                                                    msgController.canEdit();
                                                   },
                                                   icon: Icon(
                                                     msgController.editMode.value
