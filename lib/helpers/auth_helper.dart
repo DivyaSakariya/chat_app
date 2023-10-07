@@ -1,4 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_chat_app/helpers/firestore_helper.dart';
+import 'package:firebase_chat_app/modals/person_modal.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -6,6 +8,8 @@ class AuthHelper {
   AuthHelper._();
 
   static final AuthHelper authHelper = AuthHelper._();
+
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   GetStorage getStorage = GetStorage();
   final _key = 'isLogged';
@@ -21,6 +25,52 @@ class AuthHelper {
       'email',
     ],
   );
+
+  signInWithUserEmailPassword(
+      {required String email, required String password}) async {
+    try {
+      UserCredential userCredential =
+          await _firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      return userCredential;
+    } on FirebaseAuthException catch (e) {
+      print(e.code);
+      throw Exception(e.code);
+    }
+  }
+
+  signUpWithUserEmailPassword(
+      {required String email,
+      required String password,
+      required String name}) async {
+    try {
+      UserCredential userCredential =
+          await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      FireStoreHelper.fireStoreHelper.addUser(
+        personModal: PersonModal(
+          email,
+          name,
+          password,
+          [],
+          {},
+          {},
+          'Online',
+        ),
+      );
+
+      return userCredential;
+    } on FirebaseAuthException catch (e) {
+      print(e.code);
+      throw Exception(e.code);
+    }
+  }
 
   signInAnonymously() async {
     try {
@@ -58,20 +108,6 @@ class AuthHelper {
           print(e.code);
       }
       return false;
-    }
-  }
-
-  signInWithUserEmailPassword(
-      {required String email, required String password}) async {
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      return true;
-    } on FirebaseAuthException catch (e) {
-      print(e.code);
-      return true;
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_chat_app/modals/person_modal.dart';
 import 'package:firebase_chat_app/modals/student_modal.dart';
 
 class FireStoreHelper {
@@ -27,6 +28,23 @@ class FireStoreHelper {
 
   final int _counter = 0;
 
+  addUser({required PersonModal personModal}) {
+    Map<String, dynamic> data = {
+      _userEmailId: personModal.emailId,
+      _userName: personModal.name,
+      _userPassword: personModal.password,
+      _userContacts: personModal.contacts,
+      _userReceived: personModal.received,
+      _userSent: personModal.sent,
+      _userStatus: personModal.status,
+    };
+
+    _firebaseFirestore
+        .collection(_collectionUser)
+        .doc(personModal.emailId)
+        .set(data);
+  }
+
   getCredential({required String emailId}) async {
     DocumentSnapshot documentSnapshot =
         await _firebaseFirestore.collection(_collectionUser).doc(emailId).get();
@@ -38,24 +56,19 @@ class FireStoreHelper {
   }
 
   Future<Map<String, dynamic>> getUser({required String emailId}) async {
-    // return firebaseFirestore
-    //     .collection(_collectionUser)
-    //     .doc(emailId)
-    //     .snapshots();
-
     DocumentSnapshot docs =
         await _firebaseFirestore.collection(_collectionUser).doc(emailId).get();
 
     return docs.data() as Map<String, dynamic>;
   }
 
-  Future<List> getContacts({required String emailId}) async {
-    Map<String, dynamic> user = await getUser(emailId: emailId);
-
-    print("User Contact Data: $user['contacts");
-
-    return user['contacts'];
-  }
+  // Future<List> getContacts({required String emailId}) async {
+  //   Map<String, dynamic> user = await getUser(emailId: emailId);
+  //
+  //   print("User Contact Data: $user['contacts']");
+  //
+  //   return user['contacts'];
+  // }
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> getUserStream(
       {required String userEmailId}) {

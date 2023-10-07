@@ -1,10 +1,11 @@
 import 'package:firebase_chat_app/helpers/auth_helper.dart';
-import 'package:firebase_chat_app/helpers/local_notification_helper.dart';
+import 'package:firebase_chat_app/helpers/notification_helper.dart';
 import 'package:firebase_chat_app/utils/route_utils.dart';
 import 'package:firebase_chat_app/views/screens/add_student.dart';
 import 'package:firebase_chat_app/views/screens/chat_page.dart';
 import 'package:firebase_chat_app/views/screens/home_page.dart';
 import 'package:firebase_chat_app/views/screens/login_page.dart';
+import 'package:firebase_chat_app/views/services/auth/login_or_register.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
@@ -18,7 +19,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  LocalNotificationHelper.localNotificationHelper.initNotification();
+  NotificationHelper.notificationHelper.initNotification();
 
   runApp(
     const MyApp(),
@@ -52,8 +53,8 @@ class _MyAppState extends State<MyApp> {
       ),
       getPages: [
         GetPage(
-          name: MyRoutes.logInPage,
-          page: () => LogInPage(),
+          name: MyRoutes.loginOrRegister,
+          page: () => const LoginOrRegister(),
         ),
         GetPage(
           name: MyRoutes.homePage,

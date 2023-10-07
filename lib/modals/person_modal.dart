@@ -3,8 +3,9 @@ class PersonModal {
   String name;
   String password;
   List contacts;
-  List received;
-  List sent;
+  Map received;
+  Map sent;
+  String status;
 
   PersonModal(
     this.emailId,
@@ -13,6 +14,7 @@ class PersonModal {
     this.contacts,
     this.received,
     this.sent,
+    this.status,
   );
 
   factory PersonModal.fromMap({required Map data}) {
@@ -23,6 +25,7 @@ class PersonModal {
       data['contacts'],
       data['received'],
       data['sent'],
+      data['status'],
     );
   }
 }

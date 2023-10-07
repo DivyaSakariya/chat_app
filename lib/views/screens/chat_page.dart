@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_chat_app/controller/msg_controller.dart';
 import 'package:firebase_chat_app/controller/status_controller.dart';
 import 'package:firebase_chat_app/helpers/firestore_helper.dart';
+import 'package:firebase_chat_app/helpers/notification_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -71,6 +72,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     return Scaffold(
       appBar: AppBar(
         title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             StreamBuilder(
               stream: FireStoreHelper.fireStoreHelper
@@ -189,7 +191,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Row(
-                            // mainAxisSize: MainAxisSize.min,
+                            mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: allChats[index].type == 'sent'
                                 ? MainAxisAlignment.end
                                 : MainAxisAlignment.start,
@@ -333,9 +335,32 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                   receiverEmailId: data['receiver'],
                   msg: val,
                 );
+
+                NotificationHelper.notificationHelper.simpleNotification(
+                  email: data['sender'],
+                  msg: chatController.text,
+                );
+
                 chatController.clear();
               },
               decoration: InputDecoration(
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    FireStoreHelper.fireStoreHelper.sentChats(
+                      senderEmailId: data['sender'],
+                      receiverEmailId: data['receiver'],
+                      msg: chatController.text,
+                    );
+
+                    NotificationHelper.notificationHelper.simpleNotification(
+                      email: data['sender'],
+                      msg: chatController.text,
+                    );
+
+                    chatController.clear();
+                  },
+                  icon: const Icon(Icons.send),
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(32),
                 ),

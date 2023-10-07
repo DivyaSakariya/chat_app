@@ -1,10 +1,9 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-class LocalNotificationHelper {
-  LocalNotificationHelper._();
+class NotificationHelper {
+  NotificationHelper._();
 
-  static final LocalNotificationHelper localNotificationHelper =
-      LocalNotificationHelper._();
+  static final NotificationHelper notificationHelper = NotificationHelper._();
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -18,28 +17,24 @@ class LocalNotificationHelper {
     );
   }
 
-  simpleNotification(
-      {required String userEmailId,
-      required String title,
-      required String subtitle}) {
+  simpleNotification({required String email, required String msg}) {
     AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
-      userEmailId,
-      "Hello",
+      email,
+      msg,
       importance: Importance.high,
       priority: Priority.high,
     );
 
     DarwinNotificationDetails darwinNotificationDetails =
         DarwinNotificationDetails(
-      subtitle: subtitle,
+      subtitle: email,
     );
-
     flutterLocalNotificationsPlugin
         .show(
-      userEmailId as int,
-      title,
-      subtitle,
+      101,
+      email,
+      msg,
       NotificationDetails(
         android: androidNotificationDetails,
         iOS: darwinNotificationDetails,
