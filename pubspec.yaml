@@ -44,6 +44,8 @@ dependencies:
   get_storage: any
   flutter_local_notifications: ^15.1.1
   permission_handler: ^11.0.0
+  flutter_spinkit: any
+  emoji_picker_flutter: 
 
 dev_dependencies:
   flutter_test:

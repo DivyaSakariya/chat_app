@@ -2,6 +2,7 @@ import 'package:firebase_chat_app/helpers/auth_helper.dart';
 import 'package:firebase_chat_app/helpers/notification_helper.dart';
 import 'package:firebase_chat_app/utils/route_utils.dart';
 import 'package:firebase_chat_app/views/screens/add_student.dart';
+import 'package:firebase_chat_app/views/screens/all_users_page.dart';
 import 'package:firebase_chat_app/views/screens/chat_page.dart';
 import 'package:firebase_chat_app/views/screens/home_page.dart';
 import 'package:firebase_chat_app/views/screens/login_page.dart';
@@ -58,11 +59,15 @@ class _MyAppState extends State<MyApp> {
         ),
         GetPage(
           name: MyRoutes.homePage,
-          page: () => HomePage(),
+          page: () => const HomePage(),
         ),
         GetPage(
           name: MyRoutes.chatPage,
           page: () => ChatPage(),
+        ),
+        GetPage(
+          name: MyRoutes.allUsersPage,
+          page: () => const AllUsersPage(),
         ),
       ],
     );

@@ -38,7 +38,6 @@ class AuthHelper {
       return userCredential;
     } on FirebaseAuthException catch (e) {
       print(e.code);
-      throw Exception(e.code);
     }
   }
 
@@ -68,7 +67,6 @@ class AuthHelper {
       return userCredential;
     } on FirebaseAuthException catch (e) {
       print(e.code);
-      throw Exception(e.code);
     }
   }
 

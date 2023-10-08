@@ -34,6 +34,7 @@ class RegisterPage extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const Gap(100),
                   const Icon(
                     Icons.message_rounded,
                     size: 100,
@@ -46,12 +47,6 @@ class RegisterPage extends StatelessWidget {
                     ),
                   ),
                   const Gap(25),
-                  MyTextField(
-                    controller: userNameController,
-                    hintText: "User Name",
-                    obscureText: false,
-                  ),
-                  const Gap(10),
                   MyTextField(
                     controller: emailController,
                     hintText: "Email",
@@ -97,7 +92,7 @@ class RegisterPage extends StatelessWidget {
                         userModal.userName = userNameController.text;
                         userModal.email = emailController.text;
 
-                        Get.toNamed(MyRoutes.homePage, arguments: userModal);
+                        Get.offNamed(MyRoutes.homePage, arguments: userModal);
                       } catch (e) {
                         Get.snackbar(
                           "Failed!!",

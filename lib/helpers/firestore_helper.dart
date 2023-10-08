@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_chat_app/modals/person_modal.dart';
 import 'package:firebase_chat_app/modals/student_modal.dart';
@@ -9,14 +11,8 @@ class FireStoreHelper {
 
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
-  final String _collectionStudent = 'Student';
-
   final String _collectionUser = 'User';
-
-  final String _colId = 'id';
-  final String _colName = 'name';
-  final String _colAge = 'age';
-  final String _colCourse = 'course';
+  final String _collectionAllUser = 'All User';
 
   final String _userEmailId = 'emailId';
   final String _userName = 'name';
@@ -25,8 +21,6 @@ class FireStoreHelper {
   final String _userReceived = 'received';
   final String _userSent = 'sent';
   final String _userStatus = 'status';
-
-  final int _counter = 0;
 
   addUser({required PersonModal personModal}) {
     Map<String, dynamic> data = {
@@ -45,7 +39,7 @@ class FireStoreHelper {
         .set(data);
   }
 
-  getCredential({required String emailId}) async {
+  getCredentialPsw({required String emailId}) async {
     DocumentSnapshot documentSnapshot =
         await _firebaseFirestore.collection(_collectionUser).doc(emailId).get();
 
@@ -55,20 +49,59 @@ class FireStoreHelper {
     return userData['password'];
   }
 
+  getCredentialEmail({required String emailId}) async {
+    DocumentSnapshot documentSnapshot =
+        await _firebaseFirestore.collection(_collectionUser).doc(emailId).get();
+
+    Map<String, dynamic> userData =
+        documentSnapshot.data() as Map<String, dynamic>;
+
+    return userData['emailId'];
+  }
+
+  Future<Map<String, dynamic>> getAllUserEmail() async {
+    DocumentSnapshot docs = await _firebaseFirestore
+        .collection(_collectionAllUser)
+        .doc('email')
+        .get();
+
+    print("-----------------");
+    print(docs.data);
+    print("-----------------");
+
+    return docs.data as Future<Map<String, dynamic>>;
+  }
+
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getAllUserEmailStream() {
+    return _firebaseFirestore
+        .collection(_collectionAllUser)
+        .doc('email')
+        .snapshots();
+  }
+
+  addContacts({required String emailId, required String contactEmail}) async {
+    Map<String, dynamic> user = await getUser(emailId: emailId);
+
+    user['contacts'].add(contactEmail);
+
+    Map<String, dynamic> data = {
+      contactEmail: {
+        'msg': [],
+        'time': [],
+      },
+    };
+
+    _firebaseFirestore.collection(_collectionUser).doc(emailId).set(user);
+  }
+
+  addUserEmail() async {}
+
   Future<Map<String, dynamic>> getUser({required String emailId}) async {
     DocumentSnapshot docs =
         await _firebaseFirestore.collection(_collectionUser).doc(emailId).get();
 
     return docs.data() as Map<String, dynamic>;
   }
-
-  // Future<List> getContacts({required String emailId}) async {
-  //   Map<String, dynamic> user = await getUser(emailId: emailId);
-  //
-  //   print("User Contact Data: $user['contacts']");
-  //
-  //   return user['contacts'];
-  // }
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> getUserStream(
       {required String userEmailId}) {
@@ -191,61 +224,5 @@ class FireStoreHelper {
     data['status'] = "Online";
 
     _firebaseFirestore.collection(_collectionUser).doc(email).set(data);
-  }
-
-  addStudent({required StudentModal studentModal}) {
-    Map<String, dynamic> data = {
-      _colId: studentModal.id,
-      _colName: studentModal.name,
-      _colAge: studentModal.age,
-      _colCourse: studentModal.course,
-    };
-
-    _firebaseFirestore
-        .collection(_collectionStudent)
-        .doc(studentModal.id.toString())
-        .set(data);
-  }
-
-  Future<List<StudentModal>> getAllStudents() async {
-    QuerySnapshot data =
-        await _firebaseFirestore.collection(_collectionStudent).get();
-
-    List<QueryDocumentSnapshot> allData = data.docs;
-
-    List<StudentModal> allStudents = allData
-        .map((e) => StudentModal.fromMap(data: e.data() as Map))
-        .toList();
-
-    print("Student Data: ${allStudents[0].id} ${allStudents[0].name}");
-
-    return allStudents;
-  }
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> getStudentStream() {
-    return _firebaseFirestore.collection(_collectionStudent).snapshots();
-  }
-
-  Future<int> getCounter() async {
-    QuerySnapshot data =
-        await _firebaseFirestore.collection(_counter as String).get();
-
-    List<QueryDocumentSnapshot> doc = data.docs;
-
-    Map<String, dynamic> count = doc[0].data() as Map<String, dynamic>;
-
-    int idCount = count['val'];
-
-    return idCount;
-  }
-
-  increaseId() async {
-    int id = await getCounter();
-
-    Map<String, dynamic> data = {
-      'val': ++id,
-    };
-
-    _firebaseFirestore.collection(_counter as String).doc('count').set(data);
   }
 }

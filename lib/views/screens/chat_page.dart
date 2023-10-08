@@ -4,6 +4,7 @@ import 'package:firebase_chat_app/controller/status_controller.dart';
 import 'package:firebase_chat_app/helpers/firestore_helper.dart';
 import 'package:firebase_chat_app/helpers/notification_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
 import '../../modals/chat_modal.dart';
@@ -187,127 +188,134 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
 
                     return ListView.builder(
                       itemCount: allChats.length,
-                      itemBuilder: (context, index) => Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: allChats[index].type == 'sent'
-                                ? MainAxisAlignment.end
-                                : MainAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                width: 200,
-                                child: Card(
-                                  child: ListTile(
-                                    onLongPress: () {
-                                      msgController.editMode(false);
+                      itemBuilder: (context, index) => GestureDetector(
+                        onLongPress: () {
+                          msgController.editMode(false);
 
-                                      if (allChats[index].type == 'sent') {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) => Obx(() {
-                                            return AlertDialog(
-                                              title: const Text("Message Info"),
-                                              content: Visibility(
-                                                visible: msgController
-                                                    .editMode.value,
-                                                child: TextFormField(
-                                                  initialValue:
-                                                      allChats[index].chat,
-                                                  onChanged: (val) {
-                                                    editController.text = val;
-                                                  },
-                                                  decoration: InputDecoration(
-                                                    border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              32),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              actions: [
-                                                ElevatedButton.icon(
-                                                  onPressed: () {
-                                                    msgController.canEdit();
-                                                  },
-                                                  icon: Icon(
-                                                    msgController.editMode.value
-                                                        ? Icons.cancel
-                                                        : Icons.edit,
-                                                  ),
-                                                  label: Text(
-                                                    msgController.editMode.value
-                                                        ? "Cancel"
-                                                        : "Edit",
-                                                  ),
-                                                ),
-                                                TextButton.icon(
-                                                  onPressed: () {
-                                                    int sentChatIndex = sentChat
-                                                        .indexOf(allChats[index]
-                                                            .chat);
-                                                    int receivedChatIndex =
-                                                        receivedChat.indexOf(
-                                                            allChats[index]
-                                                                .chat);
-
-                                                    if (msgController
-                                                        .editMode.value) {
-                                                      FireStoreHelper
-                                                          .fireStoreHelper
-                                                          .editChat(
-                                                        senderEmailId:
-                                                            data['sender'],
-                                                        receiverEmailId:
-                                                            data['receiver'],
-                                                        chatIndex:
-                                                            sentChatIndex,
-                                                        newMsg:
-                                                            editController.text,
-                                                      );
-                                                    } else {
-                                                      FireStoreHelper
-                                                          .fireStoreHelper
-                                                          .deleteChat(
-                                                        senderEmailId:
-                                                            data['sender'],
-                                                        receiverEmailId:
-                                                            data['receiver'],
-                                                        chatIndex:
-                                                            sentChatIndex,
-                                                      );
-                                                    }
-
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  icon: Icon(
-                                                    msgController.editMode.value
-                                                        ? Icons.done
-                                                        : Icons.delete,
-                                                  ),
-                                                  label: Text(
-                                                    msgController.editMode.value
-                                                        ? "Update"
-                                                        : "Delete",
-                                                  ),
-                                                ),
-                                              ],
-                                            );
-                                          }),
-                                        );
-                                      }
-                                    },
-                                    title: Text(allChats[index].chat),
-                                    subtitle: Text(
-                                        "${allChats[index].time.hour}:${allChats[index].time.minute}"),
+                          if (allChats[index].type == 'sent') {
+                            showDialog(
+                              context: context,
+                              builder: (context) => Obx(() {
+                                return AlertDialog(
+                                  title: const Text("Message Info"),
+                                  content: Visibility(
+                                    visible: msgController.editMode.value,
+                                    child: TextFormField(
+                                      initialValue: allChats[index].chat,
+                                      onChanged: (val) {
+                                        editController.text = val;
+                                      },
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(32),
+                                        ),
+                                      ),
+                                    ),
                                   ),
+                                  actions: [
+                                    ElevatedButton.icon(
+                                      onPressed: () {
+                                        msgController.canEdit();
+                                      },
+                                      icon: Icon(
+                                        msgController.editMode.value
+                                            ? Icons.cancel
+                                            : Icons.edit,
+                                      ),
+                                      label: Text(
+                                        msgController.editMode.value
+                                            ? "Cancel"
+                                            : "Edit",
+                                      ),
+                                    ),
+                                    TextButton.icon(
+                                      onPressed: () {
+                                        int sentChatIndex = sentChat
+                                            .indexOf(allChats[index].chat);
+                                        int receivedChatIndex = receivedChat
+                                            .indexOf(allChats[index].chat);
+
+                                        if (msgController.editMode.value) {
+                                          FireStoreHelper.fireStoreHelper
+                                              .editChat(
+                                            senderEmailId: data['sender'],
+                                            receiverEmailId: data['receiver'],
+                                            chatIndex: sentChatIndex,
+                                            newMsg: editController.text,
+                                          );
+                                        } else {
+                                          FireStoreHelper.fireStoreHelper
+                                              .deleteChat(
+                                            senderEmailId: data['sender'],
+                                            receiverEmailId: data['receiver'],
+                                            chatIndex: sentChatIndex,
+                                          );
+                                        }
+
+                                        Navigator.of(context).pop();
+                                      },
+                                      icon: Icon(
+                                        msgController.editMode.value
+                                            ? Icons.done
+                                            : Icons.delete,
+                                      ),
+                                      label: Text(
+                                        msgController.editMode.value
+                                            ? "Update"
+                                            : "Delete",
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }),
+                            );
+                          }
+                        },
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: allChats[index].type == 'sent'
+                              ? CrossAxisAlignment.end
+                              : CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.all(5),
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: allChats[index].type == 'sent'
+                                    ? Colors.indigoAccent.shade100
+                                    : Colors.grey.shade400,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: allChats[index].type == 'sent'
+                                      ? const Radius.circular(8)
+                                      : Radius.zero,
+                                  bottomLeft: const Radius.circular(8),
+                                  bottomRight: const Radius.circular(8),
+                                  topRight: allChats[index].type == 'sent'
+                                      ? Radius.zero
+                                      : const Radius.circular(8),
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    allChats[index].chat,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${allChats[index].time.hour}:${allChats[index].time.minute}",
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   } else if (snapshot.hasError) {
@@ -317,14 +325,19 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                       ),
                     );
                   } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
+                    return Center(
+                      child: SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: SpinKitFadingCircle(),
+                      ),
                     );
                   }
                 },
               ),
             ),
             TextField(
+              keyboardType: TextInputType.multiline,
               controller: chatController,
               textInputAction: TextInputAction.send,
               onSubmitted: (val) {

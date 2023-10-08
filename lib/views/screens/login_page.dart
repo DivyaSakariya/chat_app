@@ -33,7 +33,7 @@ class LogInPage extends StatelessWidget {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Gap(50),
+                    const Gap(120),
                     const Icon(
                       Icons.message_rounded,
                       size: 100,
@@ -46,12 +46,6 @@ class LogInPage extends StatelessWidget {
                       ),
                     ),
                     const Gap(25),
-                    MyTextField(
-                      controller: userNameController,
-                      hintText: "User Name",
-                      obscureText: false,
-                    ),
-                    const Gap(10),
                     MyTextField(
                       controller: emailController,
                       hintText: "Email",
@@ -66,7 +60,19 @@ class LogInPage extends StatelessWidget {
                     const Gap(25),
                     MySubmitButton(
                       onTap: () async {
-                        try {
+                        String psw = await FireStoreHelper.fireStoreHelper
+                            .getCredentialPsw(emailId: emailController.text);
+
+                        String email = await FireStoreHelper.fireStoreHelper
+                            .getCredentialEmail(emailId: emailController.text);
+
+                        print("===========");
+                        print(psw);
+                        print(email);
+                        print("===========");
+
+                        if (emailController.text == email &&
+                            passwordController.text == psw) {
                           print("Sign In Successful...");
 
                           await AuthHelper.authHelper
@@ -86,12 +92,12 @@ class LogInPage extends StatelessWidget {
                           userModal.userName = userNameController.text;
                           userModal.email = emailController.text;
 
-                          Get.toNamed(MyRoutes.homePage, arguments: userModal);
-                        } catch (e) {
+                          Get.offNamed(MyRoutes.homePage, arguments: userModal);
+                        } else {
                           print("Sign In Failed...");
                           Get.snackbar(
                             "Failed!!",
-                            e.toString(),
+                            "Invalid Email Password",
                             colorText: Colors.red,
                           );
                         }
