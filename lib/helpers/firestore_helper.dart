@@ -81,15 +81,30 @@ class FireStoreHelper {
 
   addContacts({required String emailId, required String contactEmail}) async {
     Map<String, dynamic> user = await getUser(emailId: emailId);
+    Map<String, dynamic> contactUser = await getUser(emailId: emailId);
 
     user['contacts'].add(contactEmail);
+    contactUser['contacts'].add(user);
 
-    Map<String, dynamic> data = {
+    Map<String, dynamic> contactData = {
       contactEmail: {
         'msg': [],
         'time': [],
       },
     };
+
+    Map<String, dynamic> mainData = {
+      contactEmail: {
+        'msg': [],
+        'time': [],
+      },
+    };
+
+    user['received'].addAll(contactData);
+    user['sent'].addAll(contactData);
+
+    contactUser['received'].addAll(mainData);
+    contactUser['sent'].addAll(mainData);
 
     _firebaseFirestore.collection(_collectionUser).doc(emailId).set(user);
   }
