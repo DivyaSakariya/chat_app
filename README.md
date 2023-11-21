@@ -53,3 +53,13 @@ and engaging conversations.
 - User satisfaction with the application’s functionality and UI/UX
 - Quality of code and project structure
 - Presentation quality and clarity of communication
+
+## Screenshot 
+<img src ="https://github.com/DivyaSakariya/chat_app/assets/113959976/9dad54ab-67a7-4448-9ee2-e57e8f8bc072" width="250px"> </img>
+<img src = "https://github.com/DivyaSakariya/chat_app/assets/113959976/47258d89-ddf8-402b-b88c-3793ba6c23f2" width="250px"> </img>
+<img src ="https://github.com/DivyaSakariya/chat_app/assets/113959976/66cecd14-17a2-4f79-9a60-4b65345996a6" width="250px"> </img>
+<img src ="https://github.com/DivyaSakariya/chat_app/assets/113959976/1f4873d4-70c9-43a5-90cb-dd06962d72ae" width="250px"> </img>
+<img src ="https://github.com/DivyaSakariya/chat_app/assets/113959976/8f8b4a8a-2841-4fd6-a951-b21c7d0b5aad" width="250px"> </img>
+<img src ="https://github.com/DivyaSakariya/chat_app/assets/113959976/cb3966f8-62cb-4cdc-aaf8-08c4ac14b22f" width="250px"> </img>
+![IMG_20231121_165549](https://github.com/DivyaSakariya/chat_app/assets/113959976/8706a863-c70a-4519-8ac0-eb53ba172f50)
+![IMG_20231121_165602](https://github.com/DivyaSakariya/chat_app/assets/113959976/4a8872d4-b239-4bed-994b-dbfd2e3c0183)
